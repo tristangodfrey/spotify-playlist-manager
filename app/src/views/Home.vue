@@ -1,36 +1,16 @@
 <style lang="css">
 .playlists {
-  display: flex;
-  flex-direction: row;
-  width: 5000px;
+  overflow-x: scroll;
 }
 </style>
 
 <template>
   <div>
-    <div class="playlists">
-      <div
-        class="playlist-container"
-        v-for="playlist in playlists"
-        :key="playlist.id"
-      >
-        <h2>{{ playlist.name }}</h2>
-        <Container
-          :v-if="playlists.length > 0"
-          @drop="(e) => onDrop(playlist.id, e)"
-          class="playlist-container"
-          :get-child-payload="(index) => getChildPayload(playlist.id, index)"
-          group-name="main"
-        >
-          <Draggable
-            v-for="track in playlistTracks[playlist.id]"
-            :key="track.id"
-          >
-            <spotify-track-card :track="track" />
-          </Draggable>
-        </Container>
-      </div>
-    </div>
+    <v-container fluid>
+      <v-row class="flex-nowrap playlists">
+        <spotify-playlist-card v-for="playlist in playlists" :key="playlist.id" :playlist="playlist" :tracks="playlistTracks[playlist.id]" />
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -40,20 +20,17 @@ import { default as Vue } from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { default as SpotifyWebApi } from "spotify-web-api-js";
 import SpotifyTrackCard from "@/components/cards/SpotifyTrackCard.vue";
-
-type TrackPayload = {
-  playlistId: string;
-  track: SpotifyApi.TrackObjectFull;
-};
+import SpotifyPlaylistCard from "@/components/cards/SpotifyPlaylistCard.vue";
 
 @Component({
   components: {
+    SpotifyPlaylistCard,
     SpotifyTrackCard,
     Container,
     Draggable,
   },
 })
-export default class DragTest extends Vue {
+export default class Home extends Vue {
   playlists: SpotifyApi.PlaylistObjectSimplified[] = [];
 
   playlistTracks: { [key: string]: SpotifyApi.TrackObjectFull[] } = {};
@@ -98,75 +75,6 @@ export default class DragTest extends Vue {
       this.playlists = playlists.items;
     }
 
-  }
-
-  shouldAcceptDrop(playlistId: string, src: any, payload: any) {
-    //@TODO: if it's already here do nothing
-
-    //remove it from the old playlist
-
-    return true;
-  }
-
-  getChildPayload(playlistId: string, index: number) {
-
-    return {
-      playlistId,
-      track: this.playlistTracks[playlistId][index],
-    };
-  }
-
-  async onDrop(playlistId: string, dropResult: DropResult<TrackPayload>) {
-    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-      const { payload } = dropResult;
-
-
-
-      try {
-        const res = await this.$api.addTracksToPlaylist(playlistId, [
-          payload.track.uri,
-        ]);
-      } catch (e: any) {
-
-
-        return;
-      }
-
-      //remove from old playlist
-      try {
-        const res = await this.$api.removeTracksFromPlaylist(
-          payload.playlistId,
-          [payload.track.uri]
-        );
-      } catch (e: any) {
-
-
-        return;
-      }
-
-      if (dropResult.removedIndex !== null) {
-
-        this.playlistTracks[payload.playlistId].splice(
-          dropResult.removedIndex,
-          1
-        );
-
-      }
-
-      if (dropResult.addedIndex !== null) {
-
-        this.playlistTracks[playlistId].splice(
-          dropResult.addedIndex,
-          0,
-          payload.track
-        );
-
-      }
-
-      // this.$set(this.playlistTracks[playlistId], dropResult.addedIndex, payload.track);
-    }
-
-    //move to new playlist
   }
 }
 </script>

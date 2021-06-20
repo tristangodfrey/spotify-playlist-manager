@@ -694,9 +694,7 @@ declare namespace SpotifyWebApi {
     uploadCustomPlaylistCoverImage(
       playlistId: string,
       imageData: string,
-      callback?: ResultsCallback<
-        SpotifyApi.UploadCustomPlaylistCoverImageResponse
-        >
+      callback?: ResultsCallback<SpotifyApi.UploadCustomPlaylistCoverImageResponse>
     ): Promise<SpotifyApi.UploadCustomPlaylistCoverImageResponse>;
 
     /**
@@ -1137,7 +1135,7 @@ declare namespace SpotifyWebApi {
 
     search(
       query: string,
-      types: ('album' | 'artist' | 'playlist' | 'track')[],
+      types: ("album" | "artist" | "playlist" | "track")[],
       options?: SpotifyApi.SearchForItemParameterObject,
       callback?: ResultsCallback<SpotifyApi.AlbumSearchResponse>
     ): Promise<SpotifyApi.SearchResponse>;

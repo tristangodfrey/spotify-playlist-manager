@@ -29,6 +29,13 @@ app.get('/refresh', async (req, res) => {
     res.json(out);
 })
 
+
+const getExpiresEpoch = (exp) => {
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + exp);
+    return Math.floor(time.getTime() / 1000);
+}
+
 const auth = async (code, doRefresh = false) => {
     const params = new URLSearchParams()
 
@@ -70,9 +77,10 @@ const auth = async (code, doRefresh = false) => {
     return {
         token,
         refresh,
-        expires
+        expires: getExpiresEpoch(expires)
     }
 }
+
 
 app.all('/callback', async (req, res) => {
 	const code = req.query.code;
@@ -82,7 +90,7 @@ app.all('/callback', async (req, res) => {
     // res.redirect(`/?token=` + encodeURIComponent(token));
     // res.cookie('token', token);
     // res.cookie('expires', expires);
-    res.redirect(`http://localhost:8080?token=${encodeURIComponent(token)}&expires=${encodeURIComponent(expires)}`);
+    res.redirect(`http://localhost:8080?token=${encodeURIComponent(token)}&expires=${getExpiresEpoch(expires)}`);
 });
 
 app.listen(3000, () => console.log('listening on 3000'));
