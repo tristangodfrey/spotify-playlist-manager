@@ -22,7 +22,6 @@ let SpotifyStrategy = class SpotifyStrategy extends passport_1.PassportStrategy(
         });
     }
     async validate(payload) {
-        console.log(payload);
         return payload;
     }
 };

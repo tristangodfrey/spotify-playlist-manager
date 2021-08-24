@@ -18,6 +18,8 @@ const url = new URL(window.location.href);
 //@ts-ignore
 const accessToken = url.searchParams.get("token");
 
+console.log('hello');
+
 let expiresAt = parseInt(
   url.searchParams.get("expires") as string
 );

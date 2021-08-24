@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,8 +23,12 @@ let AppController = class AppController {
     getHello() {
         return this.appService.getHello();
     }
-    spotifyCallback() {
-        return "we gucci";
+    spotifyCallback(req) {
+        console.log("Spotify callback");
+        console.log(req.user);
+        return {
+            url: `/app?token=${req.user}`,
+        };
     }
 };
 __decorate([
@@ -34,9 +41,11 @@ __decorate([
 __decorate([
     common_1.Get("auth/spotify/callback"),
     common_1.UseGuards(passport_1.AuthGuard('spotify')),
+    common_1.Redirect(),
+    __param(0, common_1.Request()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
 ], AppController.prototype, "spotifyCallback", null);
 AppController = __decorate([
     common_1.Controller(),

@@ -1,4 +1,4 @@
-import {Controller, Get, UseGuards} from '@nestjs/common';
+import {Controller, Get, Redirect, UseGuards, Request } from '@nestjs/common';
 import { AppService } from './app.service';
 import {AuthGuard} from "@nestjs/passport";
 
@@ -14,7 +14,14 @@ export class AppController {
 
   @Get("auth/spotify/callback")
   @UseGuards(AuthGuard('spotify'))
-  spotifyCallback(): string {
-    return "we gucci";
+  @Redirect()
+  spotifyCallback(@Request() req) {
+
+    console.log("Spotify callback");
+    console.log(req.user);
+
+    return {
+      url: `/app?token=${req.user}`,
+    }
   }
 }
