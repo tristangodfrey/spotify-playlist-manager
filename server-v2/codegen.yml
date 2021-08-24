@@ -1,0 +1,7 @@
+schema: "./src/schema.gql"
+generates:
+   "./../app/src/client.ts":
+      plugins:
+        - typescript
+        - typescript-operations
+        - typescript-vue-apollo
