@@ -11,7 +11,7 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  
+
   @Get("auth/spotify/callback")
   @UseGuards(AuthGuard('spotify'))
   spotifyCallback(): string {
